@@ -1,9 +1,10 @@
 import styles from "./styles.module.sass"
-import {observer} from "mobx-react";
-import {useState} from "react";
-import store from "../../store/store";
+import React, {useState} from "react";
 
-const Task = observer(() => {
+
+const Task: React.FC<{ addTask: (task: string) => void }> = ({addTask}) => {
+
+
 
     const [inputValue, setInputValue] = useState('')
 
@@ -16,13 +17,15 @@ const Task = observer(() => {
                    placeholder="Введите текст задачи"/>
             <button className={styles.button}
                     onClick={() => {
-                        inputValue ? store.addTask(inputValue) : alert("Введите текст задачи!")
-                        setInputValue('')}
-            }
-            >Добавить задачу</button>
+                        inputValue ? addTask(inputValue) : alert("Введите текст задачи!")
+                        setInputValue('')
+                    }
+                    }
+            >Добавить задачу
+            </button>
         </div>
 
     )
-})
+}
 
 export default Task

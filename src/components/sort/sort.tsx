@@ -1,8 +1,7 @@
 import React, {useState} from 'react';
-import store from "../../store/store";
 import styles from "./styles.module.sass"
 
-const Sort = () => {
+const Sort: React.FC<{sort:number, setSort:(sort:number) => void}> = ({sort, setSort}) => {
 
     const sortOptions = ["Все", "Выполненные", "Не выполненные"]
     const [isOpen, setOpen] = useState(false)
@@ -13,7 +12,7 @@ const Sort = () => {
                 <b>Сортировка по:</b>
                 <span onClick={() => {
                     setOpen(!isOpen)
-                }}>{sortOptions[store.sort]}</span>
+                }}>{sortOptions[sort]}</span>
             </div>
             {isOpen &&
                 <div className={styles.sort__popup}>
@@ -21,10 +20,10 @@ const Sort = () => {
                         {
                             sortOptions.map((option: string) =>
                                 <li key={option} onClick={() => {
-                                    store.setSort(sortOptions.indexOf(option))
+                                    setSort(sortOptions.indexOf(option))
                                     setOpen(!isOpen)
                                 }
-                                } className={store.sort === sortOptions.indexOf(option) ? "active" : ""}>{option}</li>
+                                } className={sort === sortOptions.indexOf(option) ? "active" : ""}>{option}</li>
                             )
                         }
                     </ul>

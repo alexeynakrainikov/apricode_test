@@ -1,31 +1,68 @@
 import styles from "./styles.module.sass"
 import Task from "../task/Task";
-import {observer} from "mobx-react";
-import store from "../../store/store";
 import Sort from "../sort/sort";
+import React, {useState} from "react";
 
-const Tasks = observer(() => {
+const Tasks: React.FC = () => {
 
-    const sortedTasks = store.sort === 0 ?
-        store.tasks :
-        store.sort === 1 ?
-            store.tasks.filter((task) => task.completed) :
-            store.tasks.filter((task) => !task.completed)
+    interface ITask {id: string, text: string, completed: boolean}
+
+    const [tasks, setTasks] = useState <ITask[]>([
+        {id: '1', text: "Начать выполнять тестовое задание Априкод", completed: true},
+        {id: '2', text: "Залить на GitHub", completed: true},
+        {id: '3', text: "Отправить на проверку", completed: true},
+        {id: '4', text: "Получить одобрение", completed: false}
+    ])
+
+    const [sort, setSort] = useState(0)
+    console.log(tasks)
+    const addTask = (task: string) => {
+        let textValue = new Set
+        tasks.forEach((item) => textValue.add(item.text))
+        let arrValue = [...textValue]
+        if (arrValue.includes(task)) {
+            alert('Задача дублируется!')
+        } else {
+            setTasks([...tasks, {
+                id: task+`${tasks.length}`,
+                text: task,
+                completed: false
+            }])
+        }
+
+    }
+
+    const removeTask = (id: string) => {
+        setTasks(tasks.filter(task => task.id !== id))
+    }
+
+    const completeTask = (id: string) => {
+        setTasks(tasks.map(task => task.id === id ?
+            {...task, completed: !task.completed} :
+            task))
+    }
+
+    const sortedTasks = sort === 0 ?
+        tasks :
+        sort === 1 ?
+            tasks.filter((task) => task.completed) :
+            tasks.filter((task) => !task.completed)
+
     return (
         <div className={styles.todo}>
-            <Sort/>
+            <Sort sort={sort} setSort={setSort}/>
             {sortedTasks.map(task =>
                 <div className={styles.tasks} key={task.id}>
                     <div className={styles.task}>
-                        <input type="checkbox" checked={task.completed} onChange={() => store.completeTask(task.id)}/>
+                        <input type="checkbox" checked={task.completed} onChange={() => completeTask(task.id)}/>
                         {task.text}
                     </div>
-                    <button className={styles.button} onClick={() => store.removeTask(task.id)}>Удалить задачу</button>
+                    <button className={styles.button} onClick={() => removeTask(task.id)}>Удалить задачу</button>
                 </div>
             )}
-            <Task/>
+            <Task addTask={addTask}/>
         </div>
     )
-})
+}
 
 export default Tasks
